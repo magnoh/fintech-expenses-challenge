@@ -278,6 +278,11 @@ button, input, select, textarea {
   border-bottom-color: var(--text-primary);
 }
 
+.form-control option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
 .form-error {
   font-size: 0.75rem;
   color: var(--color-danger);

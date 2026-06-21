@@ -15,17 +15,36 @@ export class TransactionsService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
-  async create(userId: string, createTransactionDto: CreateTransactionDto): Promise<Transaction> {
+  async create(userId: string, createTransactionDto: CreateTransactionDto): Promise<Transaction[]> {
     // Validar se categoria pertence ao usuário
     await this.categoriesService.findOne(createTransactionDto.categoryId, userId);
 
-    const transaction = this.transactionsRepository.create({
-      ...createTransactionDto,
-      userId,
-      date: new Date(createTransactionDto.date),
-    });
+    const installmentsCount = createTransactionDto.installments && createTransactionDto.installments > 0 
+      ? createTransactionDto.installments 
+      : 1;
 
-    return this.transactionsRepository.save(transaction);
+    const transactionsToSave: Transaction[] = [];
+    const baseDate = new Date(createTransactionDto.date);
+
+    for (let i = 0; i < installmentsCount; i++) {
+      const currentDate = new Date(baseDate);
+      currentDate.setMonth(currentDate.getMonth() + i);
+
+      const description = installmentsCount > 1 
+        ? `${createTransactionDto.description} (${i + 1}/${installmentsCount})`
+        : createTransactionDto.description;
+
+      const transaction = this.transactionsRepository.create({
+        ...createTransactionDto,
+        description,
+        userId,
+        date: currentDate,
+      });
+
+      transactionsToSave.push(transaction);
+    }
+
+    return this.transactionsRepository.save(transactionsToSave);
   }
 
   async findAll(userId: string, query: GetTransactionsDto) {

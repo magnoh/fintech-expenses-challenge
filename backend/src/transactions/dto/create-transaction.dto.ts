@@ -1,4 +1,4 @@
-import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsPositive, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsPositive, IsString, IsUUID, MaxLength, IsOptional } from 'class-validator';
 import { TransactionType } from '../entities/transaction.entity';
 
 export class CreateTransactionDto {
@@ -20,4 +20,9 @@ export class CreateTransactionDto {
   @IsUUID('4', { message: 'Categoria inválida' })
   @IsNotEmpty({ message: 'A categoria é obrigatória' })
   categoryId!: string;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'A quantidade de parcelas deve ser um número' })
+  @IsPositive({ message: 'A quantidade de parcelas deve ser maior que zero' })
+  installments?: number;
 }

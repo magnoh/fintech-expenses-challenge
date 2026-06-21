@@ -16,6 +16,7 @@ const transactionSchema = z.object({
   type: z.enum(['income', 'expense'] as const, { errorMap: () => ({ message: 'Escolha o tipo' }) }),
   date: z.string().min(1, 'A data é obrigatória'),
   categoryId: z.string().uuid('Selecione uma categoria válida'),
+  installments: z.number().min(1, 'Mínimo 1 parcela').max(120, 'Máximo 120 parcelas').optional().default(1),
 });
 
 type TransactionFormValues = z.infer<typeof transactionSchema>;
@@ -70,6 +71,7 @@ export const Transactions: React.FC = () => {
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
       type: 'expense',
+      installments: 1,
     }
   });
 
@@ -464,6 +466,23 @@ export const Transactions: React.FC = () => {
                     </select>
                     {errorsCreate.categoryId && <p className="form-error">{errorsCreate.categoryId.message}</p>}
                   </div>
+                </div>
+
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label className="form-label" htmlFor="installments-t">Repetições Mensais (Parcelas)</label>
+                  <input
+                    id="installments-t"
+                    type="number"
+                    min="1"
+                    max="120"
+                    className="form-control"
+                    style={{ borderColor: errorsCreate.installments ? 'var(--color-danger)' : undefined }}
+                    {...registerCreate('installments', { valueAsNumber: true })}
+                  />
+                  <p className="form-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                    Deixe 1 para transação única. Se colocar 12, criará 12 transações independentes (uma por mês).
+                  </p>
+                  {errorsCreate.installments && <p className="form-error">{errorsCreate.installments.message}</p>}
                 </div>
               </div>
               <div className="modal-footer">

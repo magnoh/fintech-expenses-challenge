@@ -89,8 +89,8 @@ export const transactionsApi = {
     const res = await api.get<PaginatedResponse<Transaction>>('/transactions', { params });
     return res.data;
   },
-  create: async (data: { description: string; amount: number; type: TransactionType; date: string; categoryId: string }) => {
-    const res = await api.post<Transaction>('/transactions', data);
+  create: async (data: { description: string; amount: number; type: TransactionType; date: string; categoryId: string; installments?: number }) => {
+    const res = await api.post<Transaction | Transaction[]>('/transactions', data);
     return res.data;
   },
   update: async (id: string, data: Partial<{ description: string; amount: number; type: TransactionType; date: string; categoryId: string }>) => {

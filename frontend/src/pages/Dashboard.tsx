@@ -24,7 +24,10 @@ export const Dashboard: React.FC = () => {
 
   const { data: stats, isLoading, isError, refetch } = useQuery({
     queryKey: ['dashboard', startDate, endDate],
-    queryFn: () => dashboardApi.getStats({ startDate, endDate }),
+    queryFn: () => dashboardApi.getStats({ 
+      startDate: startDate || undefined, 
+      endDate: endDate || undefined 
+    }),
   });
 
   const formatCurrency = (val: number) => {
