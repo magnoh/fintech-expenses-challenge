@@ -18,7 +18,10 @@ import { DatabaseSeederService } from './database/seeder.service';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot(databaseConfigOptions),
+    TypeOrmModule.forRoot({
+      ...databaseConfigOptions,
+      autoLoadEntities: true,
+    }),
     TypeOrmModule.forFeature([User, Category, Transaction]),
     AuthModule,
     UsersModule,
