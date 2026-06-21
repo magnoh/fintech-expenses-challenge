@@ -12,6 +12,11 @@ import { Category } from './categories/entities/category.entity';
 import { Transaction } from './transactions/entities/transaction.entity';
 import { DatabaseSeederService } from './database/seeder.service';
 
+const providers: any[] = [];
+if (!process.env.VERCEL) {
+  providers.push(DatabaseSeederService);
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +34,6 @@ import { DatabaseSeederService } from './database/seeder.service';
     TransactionsModule,
     DashboardModule,
   ],
-  providers: [DatabaseSeederService],
+  providers: providers,
 })
 export class AppModule {}
